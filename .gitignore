@@ -1,0 +1,72 @@
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+# Build generated
+build/
+DerivedData
+
+# Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+
+# Other
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
+.DS_Store
+
+# Obj-C/Swift specific
+*.hmap
+*.ipa
+*.dSYM.zip
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/test_output
+fastlane/*
+output/*
+general_config/*
+
+# SonarQube
+sonar-reports/
+analyzer_reports/
+
+# R.swift
+R.generated.swift
+
+
+# ixguard
+ixguard.log
+mapping.yml
+protectionreport.html
+statistics.yml
+telemetry_dump.json
+dSYMs/**
+threatcast_mapping.yml
+# match_ad_Hoc_itsisalSisalPay.mobileprovision
+ixguard-resign.log
+ixguard-dsymutil.log
+
+# workspace
+SisalPay.xcworkspace
+
+
+
+
