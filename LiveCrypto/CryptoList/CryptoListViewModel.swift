@@ -8,6 +8,7 @@
 import Foundation
 
 class CryptoListViewModel: ObservableObject {
+    
     @Published var listIntent: CryptoListIntent = .loading
     
     var goToCryptoDetailsClosure: ((_ cryptoId: String) -> Void)?
@@ -24,5 +25,9 @@ class CryptoListViewModel: ObservableObject {
         case .failure(let error):
             self.listIntent = .apiError("\(error)")
         }
+    }
+    
+    func cryptoSelected(_ cryptoId: String) {
+        goToCryptoDetailsClosure?(cryptoId)
     }
 }

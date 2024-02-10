@@ -7,16 +7,6 @@
 
 import SwiftUI
 
-enum CryptoListIntent {
-    case loading
-    case fetched([CryptoListResponse])
-    case apiError(String)
-}
-
-protocol CryptoDetailsIntent {
-    func fetchHistoricalPrices(for cryptoId: String)
-}
-
 struct CryptoListView: View {
     @ObservedObject var viewModel: CryptoListViewModel
     
@@ -41,7 +31,7 @@ struct CryptoListView: View {
                 List(cryptos, id: \.id) { crypto in
                     
                     Button(action: {
-                        viewmodel.goToCryptoDetailsClosure?(crypto.id)
+                        viewmodel.cryptoSelected(crypto.id)
                     }) {
                         CryptoRowView(crypto: crypto)
                     }
