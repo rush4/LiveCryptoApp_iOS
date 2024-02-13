@@ -8,7 +8,6 @@
 import Foundation
 
 struct CryptoDetailsResponse: Codable {
-    let id: String
     let symbol: String
     let name: String
     let webSlug: String
@@ -16,7 +15,6 @@ struct CryptoDetailsResponse: Codable {
     let platforms: [String: String]
     let detailPlatforms: [String: DetailPlatform]
     let blockTimeInMinutes: Int
-    let hashingAlgorithm: String
     let categories: [String]
     let previewListing: Bool
     let publicNotice: String?
@@ -25,17 +23,15 @@ struct CryptoDetailsResponse: Codable {
     let links: Links
     let image: Image
     let countryOrigin: String
-    let genesisDate: String
     let sentimentVotesUpPercentage: Float
     let sentimentVotesDownPercentage: Float
     let watchlistPortfolioUsers: Int
     let marketCapRank: Int
-    let communityData: CommunityData
     let statusUpdates: [String]
     let lastUpdated: String
     
     enum CodingKeys: String, CodingKey {
-        case id, symbol, name, webSlug = "web_slug", assetPlatformID = "asset_platform_id", platforms, detailPlatforms = "detail_platforms", blockTimeInMinutes = "block_time_in_minutes", hashingAlgorithm = "hashing_algorithm", categories, previewListing = "preview_listing", publicNotice = "public_notice", additionalNotices = "additional_notices", description, links, image, countryOrigin = "country_origin", genesisDate = "genesis_date", sentimentVotesUpPercentage = "sentiment_votes_up_percentage", sentimentVotesDownPercentage = "sentiment_votes_down_percentage", watchlistPortfolioUsers = "watchlist_portfolio_users", marketCapRank = "market_cap_rank", communityData = "community_data", statusUpdates = "status_updates", lastUpdated = "last_updated"
+        case symbol, name, webSlug = "web_slug", assetPlatformID = "asset_platform_id", platforms, detailPlatforms = "detail_platforms", blockTimeInMinutes = "block_time_in_minutes", categories, previewListing = "preview_listing", publicNotice = "public_notice", additionalNotices = "additional_notices", description, links, image, countryOrigin = "country_origin", sentimentVotesUpPercentage = "sentiment_votes_up_percentage", sentimentVotesDownPercentage = "sentiment_votes_down_percentage", watchlistPortfolioUsers = "watchlist_portfolio_users", marketCapRank = "market_cap_rank", statusUpdates = "status_updates", lastUpdated = "last_updated"
     }
 }
 

@@ -26,6 +26,7 @@
 		5EEDB8442B76A2DE00D82D02 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EEDB8432B76A2DE00D82D02 /* Main.storyboard */; };
 		5EEDB8462B778FE600D82D02 /* CryptoListIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEDB8452B778FE600D82D02 /* CryptoListIntent.swift */; };
 		5EEDB8482B77930700D82D02 /* CryptoDetailsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEDB8472B77930700D82D02 /* CryptoDetailsIntent.swift */; };
+		5EEDB84B2B7BBD7800D82D02 /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEDB84A2B7BBD7700D82D02 /* Extension+String.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		5EEDB8432B76A2DE00D82D02 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		5EEDB8452B778FE600D82D02 /* CryptoListIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoListIntent.swift; sourceTree = "<group>"; };
 		5EEDB8472B77930700D82D02 /* CryptoDetailsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoDetailsIntent.swift; sourceTree = "<group>"; };
+		5EEDB84A2B7BBD7700D82D02 /* Extension+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+String.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 				5EEDB8322B73F14400D82D02 /* Coordinator */,
 				5EEDB82F2B73E67100D82D02 /* Services */,
 				5EEDB82C2B73E60600D82D02 /* Domain */,
+				5EEDB8492B7BBD5D00D82D02 /* Extension */,
 				5EEDB8032B72C49500D82D02 /* Assets.xcassets */,
 				5EEDB8432B76A2DE00D82D02 /* Main.storyboard */,
 				5EEDB8052B72C49500D82D02 /* LaunchScreen.storyboard */,
@@ -195,6 +198,14 @@
 				5EEDB8472B77930700D82D02 /* CryptoDetailsIntent.swift */,
 			);
 			path = CryptoDetails;
+			sourceTree = "<group>";
+		};
+		5EEDB8492B7BBD5D00D82D02 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				5EEDB84A2B7BBD7700D82D02 /* Extension+String.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -336,6 +347,7 @@
 				5EEDB8462B778FE600D82D02 /* CryptoListIntent.swift in Sources */,
 				5EEDB82E2B73E61B00D82D02 /* CryptoListResponse.swift in Sources */,
 				5EEDB8392B74E9FA00D82D02 /* CryptoListViewModel.swift in Sources */,
+				5EEDB84B2B7BBD7800D82D02 /* Extension+String.swift in Sources */,
 				5EEDB8402B7519AE00D82D02 /* CryptoHistorycalResponse.swift in Sources */,
 				5EEDB8362B74E63100D82D02 /* CryptoDetailsResponse.swift in Sources */,
 				5EEDB82B2B73E3D900D82D02 /* CryptoListView.swift in Sources */,

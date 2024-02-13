@@ -38,9 +38,21 @@ struct CryptoListView: View {
                 }
             }
         case .apiError(let error):
-            Text(error)
-                .foregroundColor(Color.red)
-                .padding(.all)
+            Button(action: {
+                Task{
+                    await viewmodel.fetchTopCryptos()
+                }
+            }) {
+                Text("Retry after 60 seconds")
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(
+                        LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
+                    )
+                    .cornerRadius(10)
+                    .shadow(color: .gray, radius: 5, x: 0, y: 2)
+            }
+            .animation(.easeInOut(duration: 0.5))
         }
     }
 }

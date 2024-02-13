@@ -10,5 +10,4 @@ import Foundation
 enum CryptoDetailsIntent {
     case loading
     case fetchedCryptoDetails(CryptoDetailsResponse?,[CryptoHistorycalResponse]?)
-    case apiError(String)
 }

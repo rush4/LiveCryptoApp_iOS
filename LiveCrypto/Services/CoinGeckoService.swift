@@ -11,22 +11,25 @@ protocol CoinGeckoServiceProtocol{
     func fetchCryptoList() async -> Result<[CryptoListResponse], Error>
     func fetchCryptoDetails(coinId: String) async -> Result<CryptoDetailsResponse, Error>
     func fetchCryptoHistorycal(coinId: String) async -> Result<[CryptoHistorycalResponse], Error>
-    func fetchCryptoDetails1(coinId: String, completion: @escaping (Result<CryptoDetailsResponse, Error>) -> Void)
 }
 
 struct CoinGeckoService:  CoinGeckoServiceProtocol {
     let baseURL = "https://api.coingecko.com/api/v3"
+    let apiKey = "CG-p5XCEzZ9hFEoyxS9AoLDfomw"
 
     func fetchCryptoList() async -> Result<[CryptoListResponse], Error> {
-        // Define the URL for the API endpoint
-        guard let url = URL(string: "\(baseURL)/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=it") else {
+
+        guard let url = URL(string: "\(baseURL)/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h") else {
             return (.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
         }
+        
+        var request = URLRequest(url: url)
+        request.setValue(apiKey, forHTTPHeaderField: "x_cg_demo_api_key")
         
         return await withCheckedContinuation { continuation in
             
             // Create a URLSession data task to fetch data from the API
-            URLSession.shared.dataTask(with: url) { data, response, error in
+            URLSession.shared.dataTask(with: request) { data, response, error in
                 // Check for errors and response status
                 guard let data = data, error == nil, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
                     print(response ?? "Error")
@@ -35,9 +38,6 @@ struct CoinGeckoService:  CoinGeckoServiceProtocol {
                 
                 // Decode the JSON response into an array of Crypto objects
                 do {
-                    let decoder = JSONDecoder()
-                    decoder.nonConformingFloatDecodingStrategy = .convertFromString(positiveInfinity: "+Infinity", negativeInfinity: "-Infinity", nan: "NaN")
-                    
                     let response = try JSONDecoder().decode([CryptoListResponse].self, from: data)
                     print(response)
                     return continuation.resume(returning: .success(response))
@@ -50,13 +50,16 @@ struct CoinGeckoService:  CoinGeckoServiceProtocol {
     }
     
     func fetchCryptoDetails(coinId: String) async -> Result<CryptoDetailsResponse, Error> {
-        guard let url = URL(string: "\(baseURL)/coins/\(coinId)") else {
+        guard let url = URL(string: "\(baseURL)/coins/\(coinId)?localization=en&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=true") else {
             return (.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
         }
         
+        var request = URLRequest(url: url)
+        request.setValue(apiKey, forHTTPHeaderField: "x_cg_demo_api_key")
+        
         return await withCheckedContinuation { continuation in
             
-            URLSession.shared.dataTask(with: url) { data, response, error in
+            URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data, error == nil else {
                     return continuation.resume(returning: .failure(error ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unknown error"])))
                 }
@@ -65,6 +68,8 @@ struct CoinGeckoService:  CoinGeckoServiceProtocol {
                     let response = try JSONDecoder().decode(CryptoDetailsResponse.self, from: data)
                     return continuation.resume(returning: .success(response))
                 } catch {
+                    print("Error decoding JSON:", error)
+
                     return continuation.resume(returning: .failure(error))
                 }
             }.resume()
@@ -75,6 +80,9 @@ struct CoinGeckoService:  CoinGeckoServiceProtocol {
         guard let url = URL(string: "\(baseURL)/coins/\(coinId)/ohlc?vs_currency=eur&days=7") else {
             return (.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
         }
+        
+        var request = URLRequest(url: url)
+        request.setValue(apiKey, forHTTPHeaderField: "x_cg_demo_api_key")
         
         return await withCheckedContinuation { continuation in
             
@@ -89,33 +97,13 @@ struct CoinGeckoService:  CoinGeckoServiceProtocol {
                     let marketData = response.map { entry in
                         CryptoHistorycalResponse(timestamp: entry[0] / 1000, open: entry[1], high: entry[2], low: entry[3], close: entry[4])
                     }
-                    
+                    print(marketData)
                     return continuation.resume(returning: .success(marketData))
                 } catch {
+                    print("Error decoding JSON:", error)
                     return continuation.resume(returning: .failure(error))
                 }
             }.resume()
         }
-    }
-    
-    func fetchCryptoDetails1(coinId: String, completion: @escaping (Result<CryptoDetailsResponse, Error>) -> Void) {
-        guard let url = URL(string: "\(baseURL)/coins/\(coinId)") else {
-            completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
-            return
-        }
-                    
-            URLSession.shared.dataTask(with: url) { data, response, error in
-                guard let data = data, error == nil else {
-                                completion(.failure(error ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unknown error"])))
-                                return
-                            }
-                
-                do {
-                    let response = try JSONDecoder().decode(CryptoDetailsResponse.self, from: data)
-                    completion(.success(response))
-                } catch {
-                    completion(.failure(error))
-                }
-            }.resume()
     }
 }

@@ -12,10 +12,8 @@ protocol CryptoDetailsIntentProtocol {
 }
 
 class CryptoDetailsViewModel: ObservableObject {
-    @Published var cryptoDetails: CryptoDetailsResponse?
-    @Published var cryptoHistorycal: [CryptoHistorycalResponse] = []
         
-    var cryptoDetailsntent: CryptoDetailsIntent?
+    @Published var cryptoDetailsntent: CryptoDetailsIntent = .loading
     let service: CoinGeckoServiceProtocol = CoinGeckoService()
     
     func fetchDetails(_ cryptoId: String) {
@@ -24,8 +22,6 @@ class CryptoDetailsViewModel: ObservableObject {
             
             async let cryptoDetails = getCryptoDetails(for:cryptoId)
             async let historicalDetails = fetchCryptoHistorycal(for: cryptoId)
-            
-            let responses = await [cryptoDetails, historicalDetails]
             
            cryptoDetailsntent = await .fetchedCryptoDetails(cryptoDetails, historicalDetails)
         }
@@ -60,23 +56,6 @@ class CryptoDetailsViewModel: ObservableObject {
 
             print("Error fetching crypto details: \(error)")
             return(nil)
-        }
-    }
-    
-    func getCryptoDetails1(for cryptoId: String) {
-        
-        service.fetchCryptoDetails1(coinId: cryptoId) { result in
-            
-            switch result {
-            case .success(let response):
-                // Handle successful response
-                DispatchQueue.main.async {
-                    self.cryptoDetails = response
-                }
-            case .failure(let error):
-                // Handle error
-                print("Error fetching crypto details: \(error)")
-            }
         }
     }
 }

@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum PricesChartType {
+  case bar
+  case line
+}
+
 class CryptoListViewModel: ObservableObject {
     
     @Published var listIntent: CryptoListIntent = .loading
