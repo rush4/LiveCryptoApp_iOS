@@ -7,8 +7,9 @@
 
 import Foundation
 
-protocol CryptoDetailsIntentProtocol {
-    func fetchHistoricalPrices(for cryptoId: String)
+enum PricesChartType {
+  case bar
+  case line
 }
 
 class CryptoDetailsViewModel: ObservableObject {

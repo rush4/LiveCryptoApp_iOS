@@ -31,12 +31,6 @@ struct CryptoHistorycalResponse: Codable, Identifiable {
       (high + low) / 2
     }
 
-    var dateString: String {
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = "M/d/yyyy"
-      return dateFormatter.string(from: id)
-    }
-
     func temp(type: CryptoHistorycalPriceTypes) -> Double {
       switch type {
       case .low:

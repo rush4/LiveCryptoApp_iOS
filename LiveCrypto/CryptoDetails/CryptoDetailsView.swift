@@ -40,9 +40,13 @@ struct CryptoDetailsView: View {
                                 .frame(width: 60, height: 60)
                             } else {
                                 Text("Invalid URL")
+                                    .font(.largeTitle)
+                                    .foregroundColor(Color.red)
                             }
                             Text(details?.name ?? "")
                                 .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .foregroundColor(Color.purple)
                         }
                         
                         if historycal != nil {
@@ -50,29 +54,51 @@ struct CryptoDetailsView: View {
                             Divider()
                             
                             Picker("Chart Type", selection: $chartType.animation(.easeInOut)) {
-                                Text("Bar").tag(PricesChartType.bar)
-                                Text("Line").tag(PricesChartType.line)
-                              }
+                                Text("Line").font(.title).fontWeight(.semibold).tag(PricesChartType.line)
+                                Text("Bar").font(.title).fontWeight(.semibold).tag(PricesChartType.bar)
+                            }
                               .pickerStyle(.segmented)
                             
-                            BarChartView(data: historycal ?? [])
+                            let maxValue = historycal?.map({ item in
+                                item.high
+                            }).max() ?? 0
                             
-                            LineChartView(data: historycal ?? [])
+                            let minValue = historycal?.map({ item in
+                                item.low
+                            }).min() ?? 0
                             
+                            Text("Price Chart")
+                                .font(.title)
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color.purple)
+                                .padding()
+                            Divider()
+                            
+                            switch chartType {
+                                
+                            case.bar:
+                                BarChartView(data: historycal ?? [], minValue: minValue, maxValue: maxValue)
+                            case .line:
+                                
+                                LineChartView(data: historycal ?? [], minValue: minValue, maxValue: maxValue)
+                            }
                         } else {
-                            Text("Error")
-                                .foregroundColor(Color.red)
-                                .padding(.all)
+                            ErrorView()
                         }
+                        Divider()
                         
                         if details != nil {
-
-                            Text("Description")
+                            
+                            Text("History")
                                 .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(Color.purple)
                                 .multilineTextAlignment(.leading)
-                                                        
+                                    
                             Text(details?.description.en.stringByStrippingHTML() ?? "")
                                 .font(.body)
+                                .fontWeight(.medium)
+                                .foregroundColor(Color.indigo)
                                 .multilineTextAlignment(.leading)
                             
                             Divider()
@@ -83,9 +109,7 @@ struct CryptoDetailsView: View {
                                 .font(.body)
                         } else {
                             
-                            Text("Error")
-                                .foregroundColor(Color.red)
-                                .padding(.all)
+                            ErrorView()
                         }
                         
                         Divider()
@@ -101,49 +125,48 @@ struct CryptoDetailsView: View {
 struct LineChartView: View {
     
     let data: [CryptoHistorycalResponse]
+    let minValue: Double
+    let maxValue: Double
+    @State var closePrice: Double?
     
     var body: some View {
         
-        Text("Coin Graph")
-            .font(.title)
+        Chart(data, id: \.timestamp) { chartInfo in
+            
+            LineMark(
+                x: .value("Day", chartInfo.id),
+                y: .value("Prices", chartInfo.close)
+            ).foregroundStyle(Color.blue)
+                .symbol(.circle)
+                .interpolationMethod(.catmullRom)
+        }.chartXAxisLabel("Day", alignment: .center)
+            .chartYAxisLabel("Price in €")
+            .chartXAxis {
+                AxisMarks(values: .stride(by: .day))
+            }
+            .chartYAxis {
+                AxisMarks( preset: .automatic, position: .leading)
+            }
+            .chartScrollableAxes(.horizontal)
+            .chartYScale(domain: minValue...maxValue)
+            .frame(height: 300)
             .padding()
-        Divider()
-            Chart(data, id: \.timestamp) { chartInfo in
-                
-                LineMark(
-                    x: .value("Day", chartInfo.id),
-                    y: .value("Prices", chartInfo.close)
-                ).foregroundStyle(Color.green)
-                
-            }.chartXAxisLabel("Days", alignment: .center)
-                .chartYAxisLabel("Price")
-                .chartXAxis {
-                    AxisMarks(values: .automatic(minimumStride: 42)) { _ in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel(
-                            format: .dateTime.day()
-                        )
-                    }
-                }
-                .chartYAxis {
-                    AxisMarks( preset: .automatic, position: .leading)
-                }
-                .frame(height: 300)
-                .padding()
-        }
+//        Text("\(closePrice)")
+    }
 }
 
 struct BarChartView: View {
     
     let data: [CryptoHistorycalResponse]
+    let minValue: Double
+    let maxValue: Double
     
     var body: some View {
         
         Chart(data, id: \.timestamp) { chartInfo in
             
             BarMark(
-                x: .value("Day", chartInfo.id),
+                x: .value("Close", chartInfo.id),
                 yStart: .value("Low", chartInfo.temp(type: .low)),
                 yEnd: .value("High", chartInfo.temp(type: .high)),
                 width: 10
@@ -156,23 +179,29 @@ struct BarChartView: View {
                     ]
                 )
             )
+            RectangleMark(
+                x: .value("Day", chartInfo.id),
+                y: .value("Price", chartInfo.close),
+                width: 5,
+                height: 5
+            )
+            .foregroundStyle(Color.blue)
         }.frame(height: 300)
             .padding()
             .chartXAxis {
-                AxisMarks(values: .automatic(minimumStride: 42)) { _ in
-                    AxisGridLine()
-                    AxisTick()
-                    AxisValueLabel(
-                        format: .dateTime.hour()
-                    )
-                }
+                AxisMarks(values: .stride(by: .day))
             }
-            .chartYAxisLabel("€")
+            .chartXAxisLabel("Day")
+            .chartYAxisLabel("Price in €")
             .chartForegroundStyleScale([
-                CryptoHistorycalPriceTypes.close.rawValue: Color.black,
+                CryptoHistorycalPriceTypes.close.rawValue: Color.blue,
                 CryptoHistorycalPriceTypes.low.rawValue: Color.red,
                 CryptoHistorycalPriceTypes.high.rawValue: Color.green
             ])
+            .chartScrollableAxes(.horizontal)
+            .chartYScale(domain: minValue...maxValue)
+        
+        
     }
 }
 
