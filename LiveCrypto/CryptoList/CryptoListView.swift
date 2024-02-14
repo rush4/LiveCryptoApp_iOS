@@ -37,7 +37,7 @@ struct CryptoListView: View {
                     }
                 }
             }
-        case .apiError(let error):
+        case .apiError:
             Button(action: {
                 Task{
                     await viewmodel.fetchTopCryptos()
@@ -52,7 +52,6 @@ struct CryptoListView: View {
                     .cornerRadius(10)
                     .shadow(color: .gray, radius: 5, x: 0, y: 2)
             }
-            .animation(.easeInOut(duration: 0.5))
         }
     }
 }
@@ -70,7 +69,7 @@ struct CryptoRowView: View {
                 } placeholder: {
                     ProgressView()
                 }
-                .frame(width: 40, height: 40) // Adjust size as needed
+                .frame(width: 40, height: 40)
             } else {
                 Text("Invalid URL")
             }

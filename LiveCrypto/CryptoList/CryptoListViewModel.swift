@@ -7,11 +7,6 @@
 
 import Foundation
 
-enum PricesChartType {
-  case bar
-  case line
-}
-
 class CryptoListViewModel: ObservableObject {
     
     @Published var listIntent: CryptoListIntent = .loading
@@ -28,7 +23,7 @@ class CryptoListViewModel: ObservableObject {
             self.listIntent = .fetched(response)
             
         case .failure(let error):
-            self.listIntent = .apiError("\(error)")
+            self.listIntent = .apiError
         }
     }
     
