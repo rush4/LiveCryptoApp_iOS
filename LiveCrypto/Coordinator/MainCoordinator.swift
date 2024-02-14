@@ -32,6 +32,7 @@ class MainCoordinator: NSObject {
         cryptoListViewModel.goToCryptoDetailsClosure = { [weak self] cryptoId in
         guard let self = self else { return }
             self.goToListVc(cryptoId: cryptoId)
+            cryptoListViewModel.listIntent = .loading
         }
         
         navigationController?.pushViewController(hostingViewController, animated: true)
