@@ -27,10 +27,6 @@ struct CryptoHistorycalResponse: Codable, Identifiable {
       return Date(timeIntervalSince1970: timestamp)
     }
 
-    var avg: Double {
-      (high + low) / 2
-    }
-
     func temp(type: CryptoHistorycalPriceTypes) -> Double {
       switch type {
       case .low:

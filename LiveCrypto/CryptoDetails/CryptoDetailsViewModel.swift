@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum PricesChartType {
   case bar
@@ -13,9 +14,18 @@ enum PricesChartType {
 }
 
 class CryptoDetailsViewModel: ObservableObject {
-        
+    
     @Published var cryptoDetailsntent: CryptoDetailsIntent = .loading
-    let service: CoinGeckoServiceProtocol = CoinGeckoService()
+    var service: CoinGeckoServiceProtocol? = nil
+    
+    init() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+              let coinGeckoService = appDelegate.container.resolve(type: CoinGeckoServiceProtocol.self)  else {
+            assert(false, "impossibile risolvere CoinGeckoServiceProtocol")
+            return
+        }
+        service = coinGeckoService
+    }
     
     func fetchDetails(_ cryptoId: String) {
         
@@ -24,38 +34,42 @@ class CryptoDetailsViewModel: ObservableObject {
             async let cryptoDetails = getCryptoDetails(for:cryptoId)
             async let historicalDetails = fetchCryptoHistorycal(for: cryptoId)
             
-           cryptoDetailsntent = await .fetchedCryptoDetails(cryptoDetails, historicalDetails)
+            cryptoDetailsntent = await .fetchedCryptoDetails(cryptoDetails, historicalDetails)
         }
         
     }
     
     func getCryptoDetails(for cryptoId: String) async -> (CryptoDetailsResponse?){
         
-        let result = await service.fetchCryptoDetails(coinId: cryptoId)
+        let result = await service?.fetchCryptoDetails(coinId: cryptoId)
         switch result {
         case .success(let response):
             
             return (response)
-
+            
         case .failure(let error):
-
+            
             print("Error fetching crypto details: \(error)")
+            return(nil)
+        case .none:
             return(nil)
         }
     }
     
     func fetchCryptoHistorycal(for cryptoId: String) async -> ([CryptoHistorycalResponse]?){
         
-        let result = await self.service.fetchCryptoHistorycal(coinId: cryptoId)
+        let result = await self.service?.fetchCryptoHistorycal(coinId: cryptoId)
         
         switch result {
         case .success(let response):
             
             return (response)
-
+            
         case .failure(let error):
-
+            
             print("Error fetching crypto details: \(error)")
+            return(nil)
+        case .none:
             return(nil)
         }
     }

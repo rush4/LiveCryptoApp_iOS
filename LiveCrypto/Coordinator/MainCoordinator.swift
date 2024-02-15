@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SwiftUI
 
-class MainCoordinator: NSObject {
+public class MainCoordinator: NSObject {
     
     weak var navigationController: UINavigationController?
     
@@ -21,10 +21,10 @@ class MainCoordinator: NSObject {
     // This method set the delegate of navigation controller and configure the Coordinator first view
     func start() {
         navigationController?.delegate = self
-        configureSplashController()
+        configureFirstController()
     }
     
-    private func configureSplashController() {
+    private func configureFirstController() {
         let cryptoListViewModel = CryptoListViewModel()
         let contentView = CryptoListView(viewModel: cryptoListViewModel)
         
@@ -50,7 +50,7 @@ class MainCoordinator: NSObject {
 
 // Delegate methods for UINavigationControllerDelegate
 extension MainCoordinator: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController,
+    public func navigationController(_ navigationController: UINavigationController,
                               didShow viewController: UIViewController,
                               animated: Bool){
         guard let fromViewController = navigationController.transitionCoordinator?.viewController(forKey: .from) else {

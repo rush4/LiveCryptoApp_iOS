@@ -10,5 +10,5 @@ import Foundation
 enum CryptoListIntent {
     case loading
     case fetched([CryptoListResponse])
-    case apiError
+    case apiError(NSError)
 }

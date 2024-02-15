@@ -28,15 +28,22 @@ struct CoinGeckoService:  CoinGeckoServiceProtocol {
         
         return await withCheckedContinuation { continuation in
             
-            // Create a URLSession data task to fetch data from the API
             URLSession.shared.dataTask(with: request) { data, response, error in
-                // Check for errors and response status
+
+
                 guard let data = data, error == nil, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                    print(response ?? "Error")
-                    return continuation.resume(returning: .failure(error ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unknown error"])))
+                    
+                    let response = response as? HTTPURLResponse
+                    if response?.statusCode == 429 {
+                        
+                        
+                        return continuation.resume(returning: .failure(NSError(domain: "Too many request", code: response?.statusCode ?? 400, userInfo: [NSLocalizedDescriptionKey: (response?.allHeaderFields["retry-after"] as? String) ?? ""])))
+                    } else {
+                        return continuation.resume(returning: .failure(NSError(domain: "", code: response?.statusCode ?? 400, userInfo: [NSLocalizedDescriptionKey: "Unknown Error"])))
+                    }
                 }
-                
-                // Decode the JSON response into an array of Crypto objects
+                                
+
                 do {
                     let response = try JSONDecoder().decode([CryptoListResponse].self, from: data)
                     print(response)
@@ -66,6 +73,7 @@ struct CoinGeckoService:  CoinGeckoServiceProtocol {
                 
                 do {
                     let response = try JSONDecoder().decode(CryptoDetailsResponse.self, from: data)
+                    print(response)
                     return continuation.resume(returning: .success(response))
                 } catch {
                     print("Error decoding JSON:", error)

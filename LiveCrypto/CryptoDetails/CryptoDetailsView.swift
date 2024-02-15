@@ -39,14 +39,13 @@ struct CryptoDetailsView: View {
                                 }
                                 .frame(width: 60, height: 60)
                             } else {
-                                Text("Invalid URL")
-                                    .font(.largeTitle)
-                                    .foregroundColor(Color.red)
+                                SimpleErrorView()
                             }
                             Text(details?.name ?? "")
-                                .font(.largeTitle)
+                                .font(.custom("HelveticaNeue-Bold", size: 24))
                                 .fontWeight(.bold)
                                 .foregroundColor(Color.purple)
+                                .padding()
                         }
                         
                         if historycal != nil {
@@ -67,11 +66,12 @@ struct CryptoDetailsView: View {
                                 item.low
                             }).min() ?? 0
                             
-                            Text("Price Chart")
-                                .font(.title)
-                                .fontWeight(.semibold)
-                                .foregroundColor(Color.purple)
+                            Text("Last Week Price")
+                                .font(.custom("HelveticaNeue-Bold", size: 20))
+                                .fontWeight(.bold)
+                                .foregroundColor(Color.white)
                                 .padding()
+                                
                             Divider()
                             
                             switch chartType {
@@ -83,20 +83,20 @@ struct CryptoDetailsView: View {
                                 LineChartView(data: historycal ?? [], minValue: minValue, maxValue: maxValue)
                             }
                         } else {
-                            ErrorView()
+                            SimpleErrorView()
                         }
                         Divider()
                         
                         if details != nil {
                             
-                            Text("History")
-                                .font(.headline)
+                            Text("Crypto History")
+                                .font(.custom("HelveticaNeue-Bold", size: 16))
                                 .fontWeight(.bold)
                                 .foregroundColor(Color.purple)
-                                .multilineTextAlignment(.leading)
+                                .padding()
                                     
                             Text(details?.description.en.stringByStrippingHTML() ?? "")
-                                .font(.body)
+                                .font(.custom("HelveticaNeue-Bold", size: 12))
                                 .fontWeight(.medium)
                                 .foregroundColor(Color.indigo)
                                 .multilineTextAlignment(.leading)
@@ -104,12 +104,14 @@ struct CryptoDetailsView: View {
                             Divider()
                             
                             let website = details?.links.homepage.first ?? ""
-                            
+                            Text("See more at:")
+                                .font(.footnote)
+                                .foregroundColor(Color.purple)
+                                .multilineTextAlignment(.leading)
                             Link(website , destination: (URL(string: website) ?? URL(string: "www.mooney.it"))!)
                                 .font(.body)
                         } else {
-                            
-                            ErrorView()
+                            SimpleErrorView()
                         }
                         
                         Divider()
@@ -121,90 +123,6 @@ struct CryptoDetailsView: View {
         }
     }
 }
-
-struct LineChartView: View {
-    
-    let data: [CryptoHistorycalResponse]
-    let minValue: Double
-    let maxValue: Double
-    @State var closePrice: Double?
-    
-    var body: some View {
-        
-        Chart(data, id: \.timestamp) { chartInfo in
-            
-            LineMark(
-                x: .value("Day", chartInfo.id),
-                y: .value("Prices", chartInfo.close)
-            ).foregroundStyle(Color.blue)
-                .symbol(.circle)
-                .interpolationMethod(.catmullRom)
-        }.chartXAxisLabel("Day", alignment: .center)
-            .chartYAxisLabel("Price in €")
-            .chartXAxis {
-                AxisMarks(values: .stride(by: .day))
-            }
-            .chartYAxis {
-                AxisMarks( preset: .automatic, position: .leading)
-            }
-            .chartScrollableAxes(.horizontal)
-            .chartYScale(domain: minValue...maxValue)
-            .frame(height: 300)
-            .padding()
-//        Text("\(closePrice)")
-    }
-}
-
-struct BarChartView: View {
-    
-    let data: [CryptoHistorycalResponse]
-    let minValue: Double
-    let maxValue: Double
-    
-    var body: some View {
-        
-        Chart(data, id: \.timestamp) { chartInfo in
-            
-            BarMark(
-                x: .value("Close", chartInfo.id),
-                yStart: .value("Low", chartInfo.temp(type: .low)),
-                yEnd: .value("High", chartInfo.temp(type: .high)),
-                width: 10
-            )
-            .foregroundStyle(
-                Gradient(
-                    colors: [
-                        Color.green,
-                        Color.red
-                    ]
-                )
-            )
-            RectangleMark(
-                x: .value("Day", chartInfo.id),
-                y: .value("Price", chartInfo.close),
-                width: 5,
-                height: 5
-            )
-            .foregroundStyle(Color.blue)
-        }.frame(height: 300)
-            .padding()
-            .chartXAxis {
-                AxisMarks(values: .stride(by: .day))
-            }
-            .chartXAxisLabel("Day")
-            .chartYAxisLabel("Price in €")
-            .chartForegroundStyleScale([
-                CryptoHistorycalPriceTypes.close.rawValue: Color.blue,
-                CryptoHistorycalPriceTypes.low.rawValue: Color.red,
-                CryptoHistorycalPriceTypes.high.rawValue: Color.green
-            ])
-            .chartScrollableAxes(.horizontal)
-            .chartYScale(domain: minValue...maxValue)
-        
-        
-    }
-}
-
 
 #Preview {
     CryptoDetailsView(cryptoId: "bitcoin")

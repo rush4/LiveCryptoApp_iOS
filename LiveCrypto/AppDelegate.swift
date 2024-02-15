@@ -9,9 +9,15 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    public let container = ComponentsContainer()
+    lazy var core = Core(container: container)
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        // DI Container
+        container.register(type: Core.self, instance: core)
+        container.register(type: CoinGeckoServiceProtocol.self, instance: CoinGeckoService())
         return true
     }
 
